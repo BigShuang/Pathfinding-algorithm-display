@@ -3,12 +3,12 @@ import sys
 
 FPS=60 # 游戏帧率
 
-C, R = 20, 20  # 11列， 20行
+C, R = 45, 20  # 列， 行
 CELL_SIZE = 40  # 格子尺寸
 
 PADDING = {
-    "left": 100,
-    "right": 100,
+    "left": 0,
+    "right": 0,
     "top": 50,
     "bottom": 50,
 }
