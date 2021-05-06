@@ -17,5 +17,6 @@ TODO:
 
 
 ## REFER DOCS:
-[a-star introduction](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
-[dijkstras-shortest-path-algorithm-greedy-algo-7](https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/)
+- [a-star introduction](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
+- [dijkstras-shortest-path-algorithm-greedy-algo-7](https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/)
+- [Graph Traversal in Python: BFS,DFS,Dijkstra,A-star parallel comparision](https://medium.com/nerd-for-tech/graph-traversal-in-python-bfs-dfs-dijkstra-a-star-parallel-comparision-dd4132ec323a)

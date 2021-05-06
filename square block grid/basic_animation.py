@@ -4,9 +4,10 @@ import os
 
 pygame.init()
 FONTS = [
-    pygame.font.Font(pygame.font.get_default_font(), font_size) for font_size in [48, 36, 22, 14]
+    pygame.font.Font(pygame.font.get_default_font(), font_size) for font_size in [48, 36, 16, 12]
 ]
 DEFAULT_FONT = 2
+
 
 COLORS = {
     "bg": (200, 200, 200),  # 背景颜色
@@ -21,6 +22,7 @@ COLORS = {
     "visited-text": (255,255,255),
     "visit-line": (0, 255, 0)
 }
+
 
 COLORS["current"] = (135, 206, 250)
 COLORS["visited"] = (100, 100, 125)
@@ -61,7 +63,7 @@ def read_graph_from_txt(filename):
 
 
 class Animation():
-    def __init__(self, graph_list, size=40, title="Path-finding Animation by BigShuang",
+    def __init__(self, graph_list, size=32, title="Path-finding Animation by BigShuang",
                  fps=30):
         self.clock = pygame.time.Clock()
 
@@ -226,7 +228,7 @@ class Animation():
 
 
 if __name__ == '__main__':
-    filename = "big_shuang.txt"
+    filename = "txt/big_shuang.txt"
     graph = read_graph_from_txt(filename)
     anima = Animation(graph)
     anima.display(anima.init)
