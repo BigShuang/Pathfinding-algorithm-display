@@ -6,7 +6,7 @@ def bfs(start, end, anime_graph, line=False):
                         start, end)
     anime_graph.delay(5)
 
-    visited, queue = list(), [start]
+    visited, queue = [start], [start]
 
     while len(queue) != 0:
         point = queue.pop(0)
@@ -14,20 +14,19 @@ def bfs(start, end, anime_graph, line=False):
                             point, line=line)
         if end == point:
             return
-        if point not in visited:
-            visited.append(point)
-            neigh = anime_graph.get_neighbours(point)
-            for nv in neigh:
-                if nv not in queue and \
-                        nv not in visited:
-                    queue.append(nv)
-                    anime_graph.set_prev(nv, point)
+
+        neigh = anime_graph.get_neighbours(point)
+        for nv in neigh:
+            if nv not in visited:
+                queue.append(nv)
+                visited.append(nv)
+                anime_graph.set_prev(nv, point)
 
 
 def main(filename, start, end, **kwargs):
     graph = read_graph_from_txt(filename)
-    anime_graph = Animation(graph, fps=10,
-                            title="VFS of Path-finding Animation by BigShuang")
+    anime_graph = Animation(graph, fps=12,
+                            title="BFS of Path-finding Animation by BigShuang")
     anime_graph.init()
 
     bfs(start, end, anime_graph, **kwargs)

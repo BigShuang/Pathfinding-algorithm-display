@@ -6,7 +6,7 @@ def dfs(start, end, anime_graph, line=False):
                         start, end)
     anime_graph.delay(15)
 
-    visited, stack = list(), [start]
+    visited, stack = [start], [start]
 
     while len(stack) != 0:
         point = stack.pop(len(stack) - 1)
@@ -14,19 +14,18 @@ def dfs(start, end, anime_graph, line=False):
                             point, line=line)
         if end == point:
             return
-        if point not in visited:
-            visited.append(point)
-            neigh = anime_graph.get_neighbours(point)
-            for nv in neigh:
-                if nv not in stack and \
-                        nv not in visited:
-                    stack.append(nv)
-                    anime_graph.set_prev(nv, point)
+
+        neigh = anime_graph.get_neighbours(point)
+        for nv in neigh:
+            if nv not in visited:
+                stack.append(nv)
+                visited.append(nv)
+                anime_graph.set_prev(nv, point)
 
 
 def main(filename, start, end, **kwargs):
     graph = read_graph_from_txt(filename)
-    anime_graph = Animation(graph, fps=10,
+    anime_graph = Animation(graph, fps=12,
                             title="DFS of Path-finding Animation by BigShuang")
     anime_graph.init()
 

@@ -136,6 +136,25 @@ class Animation():
         text_rect = text.get_rect(center=(cx, cy))
         self.win.blit(text, text_rect)
 
+    def draw_3_count(self, ci, ri, kind, values, size=2):
+        tlst = [
+            FONTS[size].render("%s" % values[0], True, COLORS[kind + "-text"]),
+            FONTS[size].render("%s" % values[1], True, COLORS[kind + "-text"]),
+            FONTS[size].render("%s" % values[2], True, COLORS[kind + "-text"])
+        ]
+
+        top, left = ri * self.cell_size, ci * self.cell_size
+        quarter = self.cell_size // 4
+        cxy_list = [
+            (left + quarter, top + quarter),
+            (left + 3 * quarter, top + quarter),
+            (left + 2 * quarter, top + 3 * quarter),
+        ]
+        for i in range(3):
+            cxy = cxy_list[i]
+            text_rect = tlst[i].get_rect(center=cxy)
+            self.win.blit(tlst[i], text_rect)
+
     def draw_vline(self, v, prev_v):
 
         end_pos = (v[0] * self.cell_size + self.cell_size // 2,
@@ -151,9 +170,41 @@ class Animation():
         depth = self.depth_map[pvr][pvc][1] + 1
         self.depth_map[vr][vc] = (prev_v, depth)
 
+    def draw_astar_points(self, *points, **kwargs):
+        size = kwargs.get("size", DEFAULT_FONT)
+        draw_line = kwargs.get("line", False)
+        values = kwargs.get("values")
+        # 绘制之前的
+        if self.last_points:
+            for point in self.last_points:
+                pc, pr = point
+                self.draw_cell(pc, pr, "visited")
+                if draw_line:
+                    prev_v, depth = self.depth_map[pr][pc]
+                    if prev_v:
+                        self.draw_vline(point, prev_v)
+                else:
+                    self.draw_3_count(pc, pr, "visited", values, size=2)
+
+        # 绘制本次的
+        self.count += 1
+        for point in points:
+            pc, pr = point
+            self.draw_cell(pc, pr, "current")
+            if self.depth_map[pr][pc] is not None:
+                if draw_line:
+                    prev_v, depth = self.depth_map[pr][pc]
+                    if prev_v:
+                        self.draw_vline(point, prev_v)
+                else:
+                    self.draw_3_count(pc, pr, "current", values, size=2)
+
+        self.last_points = points
+
     def draw_points(self, *points, **kwargs):
         size = kwargs.get("size", DEFAULT_FONT)
         draw_line = kwargs.get("line", False)
+        # 绘制图形
         if self.last_points:
             for point in self.last_points:
                 pc, pr = point
@@ -165,6 +216,7 @@ class Animation():
                 else:
                     self.draw_count(pc, pr, "visited", size)
 
+        # 绘制计数
         self.count += 1
         for point in points:
             pc, pr = point
