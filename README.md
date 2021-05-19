@@ -8,6 +8,14 @@ Display dfs, bfs, A star by pygame
 
 ### 0 draw basic board
 `basic_board.py`: 绘制基础的迷宫面板
+`basic_animation.py`: 实现了动画展示需要的类
+`bfs.py`: 实现了BFS + 动画展示
+`dfs.py`: 实现了DFS + 动画展示
+`astar.py`: 实现了A*寻路 + 动画展示
+TODO: 
+- astar 找到后展示路径
+- astar 探索过程中展示节点关系
+
 
 
 ## 2 - Display in Node

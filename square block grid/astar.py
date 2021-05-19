@@ -1,10 +1,15 @@
-from basic_animation import read_graph_from_txt, Animation, COLORS
+from basic_animation import read_graph_from_txt, AStarAnimation, COLORS
+
+
+# COLORS["current"] = (100, 100, 125)
+# COLORS["visited"] = (135, 206, 250)
 
 
 def heuristic(a, b):
     # Manhattan distance on a square grid
     ac, ar = a
     bc, br = b
+    # return (ac - bc) ** 2 + (ar - br) ** 2
     return abs(ac - bc) + abs(ar - br)
 
 
@@ -27,15 +32,13 @@ def a_star(start, end, anime_graph, line=False):
     cost_so_far = {
         start: 0
     }
-    datas = [0, heuristic(end, start), 0]
-    anime_graph.display(anime_graph.draw_astar_points,
-                        start, values=datas, line=line)
 
     while len(pri_queue) != 0:
         current, priority = pri_queue.pop(0)
-        # datas = [cost_so_far[current], heuristic(end, current), priority]
-        # anime_graph.display(anime_graph.draw_astar_points,
-        #                     current, values=datas, line=line)
+        datas = [cost_so_far[current], heuristic(end, current), priority]
+        anime_graph.display(anime_graph.draw_astar_points,
+                            current, values=datas, line=line, kind="current")
+
         if end == current:
             return
 
@@ -47,15 +50,16 @@ def a_star(start, end, anime_graph, line=False):
                 next_v_priority = new_cost + heuristic(end, next_v)
                 add_pri_vertex(pri_queue, next_v, next_v_priority)
                 anime_graph.set_prev(next_v, current)
-
                 datas = [new_cost, heuristic(end, next_v), next_v_priority]
-                anime_graph.display(anime_graph.draw_astar_points,
-                                    next_v, values=datas, line=line)
+                anime_graph.draw_astar_points(next_v, values=datas, line=line, kind="visited")
+
+        anime_graph.update()
+        anime_graph.delay(5)
 
 
 def main(filename, start, end, **kwargs):
     graph = read_graph_from_txt(filename)
-    anime_graph = Animation(graph, fps=5, size=48,
+    anime_graph = AStarAnimation(graph, fps=20, size=44,
                             title="A Star Path-finding Animation by BigShuang")
     anime_graph.init()
 
@@ -65,10 +69,9 @@ def main(filename, start, end, **kwargs):
 
 
 if __name__ == '__main__':
-    filename = "txt/a001.txt"
-    # filename = "sanlian2.txt"
-    start = (0, 0)
-    end = (7, 6)
+    filename = "txt/a003.txt"
+    start = (10, 10)
+    end = (20, 4)
     main(filename, start, end)
     # main(filename, start, end, line=True)
 

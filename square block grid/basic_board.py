@@ -3,8 +3,8 @@ import sys
 
 FPS=60 # 游戏帧率
 
-C, R = 45, 20  # 列， 行
-CELL_SIZE = 40  # 格子尺寸
+C, R = 32, 18  # 列， 行
+CELL_SIZE = 44  # 格子尺寸
 
 PADDING = {
     "left": 0,
@@ -155,7 +155,6 @@ def save_to_txt(board, filename):
         print("Saved to %s." % filename)
     except Exception as e:
         print("save failed:", e)
-
 
 
 board = Board(win, C, R, CELL_SIZE)
