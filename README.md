@@ -14,8 +14,7 @@ Display dfs, bfs, A star by pygame
 `astar.py`: 实现了A*寻路 + 动画展示
 TODO: 
 - astar 找到后展示路径
-- astar 探索过程中展示节点关系
-
+- astar 箭头展示
 
 
 ## 2 - Display in Node

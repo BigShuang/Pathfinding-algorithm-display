@@ -25,6 +25,7 @@ COLORS = {
     "cost-text": (255, 255, 255),
     "heuristic-text": (255, 255, 255),
     "priority-text": (255,255,0),
+    "path": (0, 0, 255),
 }
 
 
@@ -241,6 +242,11 @@ class AStarAnimation(BasicAnimation):
             # cur_vertex: prev_vertex
         }
 
+        width, height = self.c * self.cell_size, self.r * self.cell_size
+
+        self.explored = {}
+        self.neigh = {}
+
     def draw_count(self, ci, ri, kind, values, size=2):
         tlst = [
             FONTS[size].render("%s" % values[0], True, COLORS["cost-text"]),
@@ -253,27 +259,94 @@ class AStarAnimation(BasicAnimation):
         cxy_list = [
             (left + quarter, top + quarter),
             (left + 3 * quarter, top + quarter),
-            (left + 2 * quarter, top + 3 * quarter),
+            (left + quarter, top + 3 * quarter),
         ]
         for i in range(3):
             cxy = cxy_list[i]
             text_rect = tlst[i].get_rect(center=cxy)
             self.win.blit(tlst[i], text_rect)
 
-    def draw_astar_points(self, *points, **kwargs):
+    def draw_astar_points(self, point, values, **kwargs):
         size = kwargs.get("size", DEFAULT_FONT)
         kind = kwargs.get("kind")
         draw_line = kwargs.get("line", False)
-        values = kwargs.get("values")
         # 绘制
         self.count += 1
-        for point in points:
-            pc, pr = point
-            self.draw_cell(pc, pr, kind)
-            self.draw_count(pc, pr, kind, values, size=2)
+        pc, pr = point
+        self.draw_cell(pc, pr, kind)
+        self.draw_count(pc, pr, kind, values, size=2)
 
     def set_prev(self, next_v, current):
         self.prev_map[next_v] = current
+
+    def draw_vline(self, v, prev_v):
+        sx = prev_v[0] * self.cell_size + self.cell_size // 2
+        sy = prev_v[1] * self.cell_size + self.cell_size // 2
+        ex = v[0] * self.cell_size + self.cell_size // 2
+        ey = v[1] * self.cell_size + self.cell_size // 2
+
+        dx, dy = (ex - sx), (ey - sy)
+
+        start_pos = (sx + dx // 4, sy + dy // 4)
+        end_pos = (ex - dx // 4, ey - dy // 4)
+        pygame.draw.line(self.win, COLORS["visit-line"], start_pos, end_pos, width=3)
+
+        arrow_hw = 5
+        if dy == 0:
+            x1 = ex - dx // 8
+            x2 = ex - dx * 3 // 8
+            arrow_points = [(x1, sy), (x2, sy - arrow_hw), (x2, sy + arrow_hw)]
+            pygame.draw.polygon(self.win, COLORS["visit-line"], arrow_points)
+
+        if dx == 0:
+            y1 = ey - dy // 8
+            y2 = ey - dy * 3 // 8
+            arrow_points = [(sx, y1), (sx - arrow_hw, y2), (sx + arrow_hw, y2)]
+            pygame.draw.polygon(self.win, COLORS["visit-line"], arrow_points)
+
+
+    def add_node_data(self, point, data, kind):
+        if kind == "neigh":
+            self.neigh[point] = data
+        elif kind == "used":
+            self.explored[point] = data
+            self.neigh = {}
+
+    def draw_path(self):
+        vertex = self.end
+        while vertex:
+            self.draw_astar_points(vertex, self.explored[vertex], kind="path")
+            vertex = self.prev_map.get(vertex)
+
+            for v in self.prev_map:
+                pv = self.prev_map[v]
+                if pv:
+                    vl = self.draw_vline(v, pv)
+
+            pygame.display.update()
+            self.clock.tick(self.fps)
+
+
+    def update(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                # 判断当前事件是否为点击右上角退出键
+                pygame.quit()
+
+        self.draw_line()
+        for p in self.explored:
+            # print(p, self.explored[p])
+            self.draw_astar_points(p, self.explored[p], kind="current")
+        for q in self.neigh:
+            self.draw_astar_points(q, self.neigh[q], kind="visited")
+
+        for v in self.prev_map:
+            pv = self.prev_map[v]
+            if pv:
+                vl = self.draw_vline(v, pv)
+
+        pygame.display.update()
+        self.clock.tick(self.fps)
 
 
 if __name__ == '__main__':
